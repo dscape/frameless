@@ -1,6 +1,6 @@
 # clif
 
-`clif` is a set of decisions on how to build cli apps
+`clif` (short for command line interface framework) is a set of decisions on how to build cli apps
 
 the main design goals are:
 
