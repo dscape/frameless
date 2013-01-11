@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+var clif = require('../lib/clif');
+
+//
+// turning on dotfile saving
+//
+clif.save(true);
+
+clif.relax('name', function (opts) {
+  clif.info('hello ' + opts.name);
+});

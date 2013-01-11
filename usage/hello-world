@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+var clif = require('../lib/clif');
+
+//
+// dont confirm my options, its just a halo world dude!
+// same as doing `--yes`
+//
+clif.confirm(false);
+
+clif.relax('name', function (opts) {
+  clif.info('hello ' + opts.name);
+});
+
+//
+// # tutorial
+//
+// clif generates help for you
+//
+// ```
+// ./hello-world --help
+// ```
+//
+// feel free to run the hello world
+//
+// ```
+// ./hello-world
+// ```
+//
+// dislike those nasty colors?
+//
+// ```
+// ./hello-world --raw
+// ```
+//
+// wish you could skip prompt?
+//
+// ```
+// ./hello-world --name foobar
+// ```
+//
+// oh wait, does help raw work?
+//
+// ```
+// ./hello-world --help --raw
+// ```
+//

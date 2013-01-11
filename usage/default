@@ -1,0 +1,36 @@
+#!/usr/bin/env node
+var clif = require('../lib/clif');
+
+clif.relax('required', function (opts) {
+  clif.warn(opts.required);
+});
+
+//
+// # tutorial
+//
+// this is the default tutorial, it shows the default behavior
+//
+// this is basically what hello world did
+//
+// ```
+// ./default --no-verbose --no-save --yes
+// ```
+// 
+// if we dont do `--yes` we will be asked for a confirmation. by now you
+// know you can disable this right? of course you do, you saw the halo-world
+// example
+//
+// ```
+// ./default --required yeah --no-save
+// ```
+//
+// you can customize the are you sure thing, but that's for another tutorial
+// now lets look at the default behavior here
+//
+// ```
+// ./default --verbose
+// ```
+//
+// things you add into relax are required. you can customize this using the
+// same style as in [prompt](https://github.com/flatiron/prompt) if you like
+//
