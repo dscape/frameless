@@ -20,3 +20,8 @@ check the `usage/` folder for some samples
 * [optimist]
 * [eyes]
 * [colors]
+
+[prompt]: https://github.com/flatiron/prompt
+[optimist]: https://github.com/substack/node-optimist
+[eyes]: https://github.com/cloudhead/eyes.js
+[colors]: https://github.com/marak/colors.js

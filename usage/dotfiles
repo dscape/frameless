@@ -2,10 +2,46 @@
 var clif = require('../lib/clif');
 
 //
-// turning on dotfile saving
+// use a different encryption key
+// clif has a default one, but you shouldn't be using it
+//
+clif.key = 'd41d8cd98f00b204e9800998ecf8427e';
+
+//
+// turning on saving of arguments
 //
 clif.save(true);
 
-clif.relax('name', function (opts) {
-  clif.info('hello ' + opts.name);
+clif.relax('name', 'password', function (opts) {
+  clif.info(clif.dotfile, 'write');
 });
+
+//
+// running a command with save will cause the command to save a dot file with
+// the parameters introduced
+//
+// ```
+// ./dotfiles --verbose
+// ```
+//
+// feel free to inspect the contents of the file. you will find that password
+// has been encrypted
+//
+// if you want to make use of this functionality in your cli I suggest you
+// change the `cli.key`
+//
+// if you run the command again you will get the output imediately as
+// clif can get the data from the dot file
+//
+// you can change these values at command execution time by specifying the
+// value
+//
+//
+// if you don't wish to save some parameters you can specify the by using a
+// 'no-save' key
+//
+// if you wish to reconfigure the full setup you can run `--config`
+//
+// if you have a custom key that you need encrypted that is not part of
+// clif.sensitive_info you can add it and clif will start encrypting it
+//
