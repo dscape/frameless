@@ -2,7 +2,7 @@
 
 ## introduction
 
-“[clif]”(https://github.com/dscape/clif) (**c**ommand **l**ine **i**nterface **f**ramework) is a framework to write cli programs. “clif” allows you to write [command line interfaces](http://en.wikipedia.org/wiki/Command-line_interface) that are easy to read, and fun to write.
+[“clif”](https://github.com/dscape/clif) (**c**ommand **l**ine **i**nterface **f**ramework) is a framework to write cli programs. “clif” allows you to write [command line interfaces](http://en.wikipedia.org/wiki/Command-line_interface) that are easy to read, and fun to write.
 
 thus, “clif” is two things: (1) a set of decisions focused around how command line interfaces should work; and (2) a node.js module that demonstrates those decisions
 
