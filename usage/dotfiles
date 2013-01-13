@@ -13,7 +13,7 @@ clif.key = 'd41d8cd98f00b204e9800998ecf8427e';
 clif.save(true);
 
 clif.relax('name', 'password', function (opts) {
-  clif.info(clif.dotfile, 'write');
+  clif.info(clif.dotfile, 'dotfile');
 });
 
 //
@@ -32,6 +32,10 @@ clif.relax('name', 'password', function (opts) {
 //
 // if you run the command again you will get the output imediately as
 // clif can get the data from the dot file
+//
+// ```
+// ./dotfiles --yes
+// ```
 //
 // you can change these values at command execution time by specifying the
 // value

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var clif = require('../lib/clif');
 
+clif.version = '1.0.1';
+
 clif.relax('required', function (opts) {
   clif.warn(opts.required);
 });
@@ -34,3 +36,8 @@ clif.relax('required', function (opts) {
 // things you add into relax are required. you can customize this using the
 // same style as in [prompt](https://github.com/flatiron/prompt) if you like
 //
+// you can also print the version of your command
+//
+// ```
+// ./default -v
+// ```
