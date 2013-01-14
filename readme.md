@@ -14,9 +14,9 @@ the best way to get a feel for “clif” is to simply look at an node.js cli pr
 
 ## basics
 
-## default options
+### default options
 
-command line interfaces are expected to respond consistently to options such as `version`, `yes`, `raw`, `verbose`, `help`, `setup`. “clif” will perform all these operations and behave according to what you expect. you can check which options are reserved by printing `clif.reserved_options`, and customize styles by overriding the style methods that correspond to the options
+command line interfaces are expected to respond consistently to options such as `version`, `yes`, `raw`, `verbose`, `help`, `setup`. “clif” will perform all these operations and behave according to the principle of least surprise. you can check which options are reserved by printing `clif.reserved_options`, and customize styles by overriding the style methods that correspond to the options
 
 ``` javascript
 var clif = require('clif');
@@ -24,17 +24,12 @@ var clif = require('clif');
 // assuming placement in `bin/` folder
 clif.version = require('../package').version;
 
-// override the printing behavior for version
-clif.pp_version = function () {
-  console.log(clif.version);
-};
-
 clif.main(function () {
   clif.silly(clif.reserved_options);
 });
 ```
 
-## prompt
+### prompt
 
 “clif” will ask for options that are required but were not provided at run time using  a prompt
 
@@ -48,7 +43,7 @@ if you run “clif” without specifying `--name alice` “clif” will prompt y
 
 “clif” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties)
 
-## the confirmation prompt
+### the confirmation prompt
 
 “cli” will enable an “are you sure?” prompt if deliberately ask for it in your code
 
@@ -84,3 +79,36 @@ clif.main('name',
 });
 ```
 
+### router
+
+tbd.
+
+### themes
+
+internally “clif” exposes methods that format output presented to user. please check the source code in the `style` section for a better understanding of all functions you can customize to your liking (e.g. `clif.PS1`)
+
+### man pages
+
+### publishing your module with npm
+
+tbd.
+
+## apps built using clif
+
+* [ghcopy](https://github.com/dscape/ghcopy)
+
+## license
+
+copyright 2011 nuno job <nunojob.com> (oO)--',--
+
+licensed under the apache license, version 2.0 (the "license");
+you may not use this file except in compliance with the license.
+you may obtain a copy of the license at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+unless required by applicable law or agreed to in writing, software
+distributed under the license is distributed on an "as is" basis,
+without warranties or conditions of any kind, either express or implied.
+see the license for the specific language governing permissions and
+limitations under the license.

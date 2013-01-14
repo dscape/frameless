@@ -1,0 +1,82 @@
+#!/usr/bin/env node
+//
+// sample clif script to create a user against couchdb
+//
+var clif   = require('../lib/clif')
+  , crypto = require('crypto')
+  ;
+
+//
+// "clif" allows you specify your own encryption key
+// by default it will use ~/.ssh/id_rsa and 
+// fallback to a key included in the code
+//
+clif.key = 'd41d8cd98f00b204e9800998ecf8427e';
+
+//
+// turn on persisting options
+//
+clif.save(true);
+
+clif.main('hostname', 'port', 'username', 'password', 'protocol'
+  , { name: 'usr-name', required: true, save: false }
+  , { name: 'usr-pwd', required: true, save: false }
+  , { name: 'usr-email', required: true, save: false }, function (opts) {
+    var salt = (~~(Math.random() * 1e9)).toString(36)
+      , path = '-/user/org.couchdb.user:' + encodeURIComponent(opts[usr-name])
+      , user =
+        { name         : opts['usr-name']
+        , email        : opts['usr-email']
+        , _id          : 'org.couchdb.user:' + opts['usr-name']
+        , type         : 'user'
+        , roles        : []
+        , date         : new Date().toISOString()
+        , salt         : salt
+        , password_sha : crypto.createHash('sha1')
+          .update(opts['usr-pwd'] + salt).digest('hex')
+        };
+    //do the request
+    
+});
+
+  db.privateNpm.dinosaur({
+    method: 'PUT', 
+    path: '-/user/org.couchdb.user:' + encodeURIComponent(opts.username),
+    body: user
+  }, h.print);
+});
+//
+// running a command with save will cause the command to save a dot file with
+// the parameters introduced
+//
+// ```
+// ./dotfiles --verbose
+// ```
+//
+// feel free to inspect the contents of the file. you will find that password
+// has been encrypted
+//
+// if you want to make use of this functionality in your cli I suggest you
+// change the `cli.key`
+//
+// if you run the command again you will get the output imediately as
+// clif can get the data from the dot file
+//
+// ```
+// ./dotfiles --yes
+// ```
+//
+// you can change these values at command execution time by specifying the
+// value
+//
+//
+// if you don't wish to save some parameters you can specify the by using a
+// 'no-save' key
+//
+// if you wish to reconfigure the full setup you can run `--config`
+//
+// if you have a custom key that you need encrypted that is not part of
+// clif.sensitive_info you can add it and clif will start encrypting it
+//
+// create `--setup`
+//

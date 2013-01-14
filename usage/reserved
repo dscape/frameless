@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var clif = require('../lib/clif');
+
+clif.relax('help', function (opts) {
+  clif.silly(clif.reserved_options);
+});
+
+//
+// this module gets tests against `test/reserved-test.js`
+// if you are curious about it feel free to take a peek in the source code
+//

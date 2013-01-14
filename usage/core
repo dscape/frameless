@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+var clif = require('../lib/clif');
+
+clif.version = '1.0.1';
+clif.pp_version = function () { console.log(clif.version); };
+
+clif.relax('required', function (opts) {
+  clif.warn(opts.required);
+});
+
+//
+// this module gets tests against `test/core-test.js`
+// if you are curious about it feel free to take a peek in the source code
+//
