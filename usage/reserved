@@ -2,6 +2,11 @@
 
 var frameless = require('../lib/frameless');
 
+//
+// `--help` is a reserved option, so when you try to use it in your programs
+// they will not work. you can override this behavior with some hacking around
+// but i recomment aggainst it
+//
 frameless('help', function (opts) {
   frameless.silly(frameless.reserved_options);
 });

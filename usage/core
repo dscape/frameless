@@ -2,10 +2,26 @@
 
 var frameless = require('../lib/frameless');
 
+//
+// overriding the version, so the end-user can see the version of this
+// program when calling with the option `--version`
+//
 frameless.version = '1.0.1';
+
+//
+// customize the pretty print for the version
+//
 frameless.pp_version = function () { console.log(frameless.version); };
 
+
+//
+// `--required` is a required option
+//
 frameless('required', function (opts) {
+  //
+  // warn is one of the levels to output a nicely formatted message
+  // others are info, silly, and err
+  //
   frameless.warn(opts.required);
 });
 

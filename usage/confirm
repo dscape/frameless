@@ -2,10 +2,21 @@
 
 var frameless = require('../lib/frameless');
 
+//
+// prompt users with a `are you sure` confirmation dialog
+// end users can override this behavior by using the --yes option
+//
 frameless.confirm(false);
 
+//
+// single required option, `whoami`
+//
 frameless('whoami', function (opts) {
-  frameless.warn(opts);
+  //
+  // silly is one of the levels to output a nicely formatted message
+  // others are warn, info, and err
+  //
+  frameless.silly(opts);
 });
 
 //

@@ -1,0 +1,110 @@
+#!/usr/bin/env node
+//
+// sample frameless script to create a couchdb user
+//
+// please run `npm install nano` to run this example
+//
+var frameless = require('../lib/frameless')
+  , url       = require('url')
+  , nano      = require('nano')
+  ;
+
+//
+// "frameless" allows you specify your own encryption key
+// by default it will use ~/.ssh/id_rsa and 
+// fallback to a key included in the code
+//
+frameless.key = 'd41d8cd98f00b204e9800998ecf8427e';
+
+//
+// add a new entry in sensitive options
+// as a result hostname will be encrypted
+//
+frameless.sensitive_options.push('hostname');
+
+//
+// turn on persisting options
+//
+frameless.save(true);
+
+//
+// print the dotfile location so we can use it in tests
+//
+console.log(frameless.dotfile);
+
+frameless(
+  //
+  // options that are saved to the dot file
+  // can be latered altered with the --setup option
+  //
+    { name: 'hostname' , required: false, 'default': 'localhost:5984' }
+  , { name: 'protocol' , required: false, 'default': 'http:'     }
+  , { name: 'username' , required: false             }
+  , { name: 'password' , required: false             }
+  //
+  // these will never be saved to the dotfile
+  //
+  , { name: 'usr-name' , required: true, save: false }
+  , { name: 'usr-pwd'  , required: true, save: false }
+  , { name: 'usr-email', required: true, save: false }, function (opts) {
+
+    //
+    // our uri object
+    //
+    var uri = { protocol : opts.protocol, hostname : opts.hostname };
+
+    //
+    // skip auth if we dont have a proper username and password
+    //
+    if(typeof opts.username==='string' && typeof opts.password==='string') {
+      uri.auth = opts.username + ':' + opts.password;
+    }
+
+    //
+    // `nano`, our couchdb client, expects a string for the endpoint
+    // not an object
+    //
+    uri = url.format(uri) + '/_users';
+
+    //
+    // our user document
+    //
+    var user =
+        { name         : opts['usr-name']
+        , email        : opts['usr-email']
+        , _id          : 'org.couchdb.user:' + opts['usr-name']
+        , type         : 'user'
+        , roles        : []
+        , date         : new Date().toISOString()
+        };
+
+    //
+    // our database object
+    //
+    var _users = nano(uri);
+
+    //
+    // perform the http request to insert the user
+    //
+    // frameless.print is a generic callback function that will print
+    // an error or the response according to usual nodejs conventions
+    //
+    
+    //
+    // this line is commented so we can use this in tests without
+    // requiring couchdb. remove the comment and comment the one below
+    // with the hard coded response for the real deal
+    //
+    // _users.insert(user, frameless.print);
+    //
+
+    frameless.print(null,
+      { "rev": "1-681a"
+      , "id": "org.couchdb.user:" + opts['usr-name']
+      , "ok": true });
+});
+
+//
+// this module gets tests against `test/dotfiles-test.js`
+// if you are curious about it feel free to take a peek in the source code
+//

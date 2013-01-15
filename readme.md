@@ -26,17 +26,17 @@ var frameless = require('frameless');
 // assuming placement in `bin/` folder
 frameless.version = require('../package').version;
 
-frameless.main(function (opts) {
+frameless(function (opts) {
   frameless.ok(frameless.reserved_options);
 });
 ```
 
 ### prompt
 
-“frameless” will prompt the end user for options that are required but were not provided at run time. i.e. if you run “frameless” without specifying `--name alice` in the following script “frameless” will prompt you for the name
+“frameless” will prompt the end user for options that were not provided at run time. i.e. if you run “frameless” without specifying `--name alice` in the following script “frameless” will prompt you for the name
 
 ``` javascript
-frameless.main('name', function (input) {
+frameless('name', function (input) {
   frameless.info('hello ' + input.name);
 });
 ```
@@ -60,7 +60,7 @@ this check can then be overridden by the end user by using the `-y` or `--yes` o
 ``` javascript 
 frameless.save(true);
 
-frameless.main('name', 'password', function (opts) {
+frameless('name', 'password', function (opts) {
   frameless.info(frameless.dotfile, 'dotfile');
   frameless.info(frameless.sensitive_options,  'sensitive');
 });
@@ -73,12 +73,14 @@ special considerations are taken for saving options which are member of an inter
 ``` javascript 
 frameless.save(true);
 
-frameless.main('name',
+frameless('name',
   { name: 'password', required: true, save: false}, function (opts) {
   frameless.info(frameless.dotfile, 'dotfile');
   frameless.info(frameless.sensitive_options,  'sensitive');
 });
 ```
+
+configuring your command line program can later be done by the end user by changing the dot file or running your command with `--setup`
 
 ### pretty printing
 
