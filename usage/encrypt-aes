@@ -1,0 +1,204 @@
+#!/usr/bin/env node
+var frameless = require('../lib/frameless')
+  , path      = require('path')
+  , fs        = require('fs')
+  , crypto    = require('crypto')
+  ;
+
+//
+// remove colored output
+//
+frameless.raw();
+
+//
+// sets the version of this program
+//
+frameless.version = "0.0.1";
+
+//
+// change our prompt
+//
+frameless.PS1 = '? ';
+
+//
+// set how to pretty print the version of this program
+//
+frameless.pp_version = function () {
+  console.log('version '+ frameless.version);
+};
+
+//
+// sets the pretty print for usage
+//
+frameless.usage = function () {
+  console.log('version '+ frameless.version);
+  console.log(
+    [ 'usage: encrypt-aes [-hvD] [-k=/some/encryption/key]'
+    , '-h, --help     display this message'
+    , '-v, --version  display version info'
+    , '-D, --decode   decodes input'
+    , '-k=path        encryption key to be used'
+    ].join('\n'));
+};
+
+//
+// save key so we can reuse it
+//
+frameless.save(true);
+
+//
+// the key is required. the first time we choose it gets stored
+// and never gets asked again. you can then change it by using -k option
+//
+frameless(
+  { name: 'k'
+  , required: true
+  , 'default': path.join(frameless.tilde,
+    '.ssh', 'id_rsa') }, function (opts) { // fixme: prompt before stdin
+
+  //
+  // warning this source code serves as illustration only
+  // this was unproperly implemented (cause im on a plane and dont have wifi)
+  // and the new Streams2 abstraction will make this a breeze to do
+  //
+  var key
+    , decipher
+    , cipher
+    , encoded
+    , ret
+    , buffer = '';
+
+  function encrypt_aes (chunk) {
+    //
+    // we still havent loaded the key file
+    // so we keep buffering
+    //
+    if(!key) {
+      buffer += chunk;
+      return;
+    }
+
+    //
+    // if we have the keyfile but our buffer is non empty
+    //
+    if(buffer !== '') {
+      chunk  = buffer + chunk;
+      buffer = '';
+    }
+
+    //
+    // decrypt
+    //
+    if(frameless.argv.d) {
+      ret = decipher.update(chunk, 'hex', 'utf8');
+    }
+    //
+    // encrypt
+    //
+    else {
+      ret = cipher.update(chunk, 'utf8', 'hex');
+    }
+  }
+
+  //
+  // read out key file
+  //
+  // fixme: i would be open to a pull request which makes this an option
+  // to frameless itself and automating this process for all files
+  //
+  fs.readFile(opts.k, 'utf8', function (err, _key) {
+    if(err) {
+      console.log('error. ' + err.message);
+      return;
+    }
+    //
+    // set our crypto objects
+    //
+    key = _key;
+    decipher = crypto.createDecipher('aes-256-cbc', _key);
+    cipher   = crypto.createCipher('aes-256-cbc', _key);
+  });
+
+  //
+  // open stdin from `|`
+  //
+  var stdin = process.openStdin();
+  stdin.setEncoding('utf8');
+
+  //
+  // whenever there is data encrypt it
+  //
+  stdin.on('data', encrypt_aes);
+
+  //
+  // if we reached the end of input
+  //
+  stdin.on('end', function stdin_end() {
+    //
+    // if we still have buffered data encrypt it
+    //
+    if(buffer !== '') {
+      encrypt_aes('');
+    }
+
+    //
+    // if the key has not loaded yet retry
+    //
+    if(!key) {
+      setTimeout(stdin_end, 50);
+      return;
+    }
+
+    //
+    // decrypt
+    //
+    if(frameless.argv.d) {
+      ret += decipher.final('utf8');
+    }
+
+    //
+    // encrypt
+    //
+    else {
+      ret += cipher.final('hex');
+    }
+
+    //
+    // write out the results
+    //
+    process.stdout.write(ret);
+  });
+});
+
+// fixme: support `^D` for people to be able to use stdin without piping
+
+//
+// this module gets tests against `test/encrypt-test.js`
+// if you are curious about it feel free to take a peek in the source code
+//
+
+/*
+ * name
+ *      encrypt-aes -- encrypt and decrypt with aes-256-cbc
+ *
+ * synopsis
+ *      encrypt-aes [-h | -v | -d] [-k=/some/encryption/key]
+ *
+ * description
+ *      encrypt-aes encrypts and decrypts data. encrypt-aes reads raw data
+ *      from stdin and writes encoded data as a continuous block to stdout
+ *
+ * options
+ *      the following options are available:
+ *
+ *      -d
+ *      --decode             decode incoming base64 stream into binary data.
+ *
+ *      -h
+ *      --help               print usage summary and exit.
+ *
+ *      -v
+ *      --version            print build version and exit.
+ *
+ *      -k=path              private key to be used
+ */

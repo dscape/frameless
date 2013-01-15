@@ -6,7 +6,7 @@ var frameless = require('../lib/frameless');
 // prompt users with a `are you sure` confirmation dialog
 // end users can override this behavior by using the --yes option
 //
-frameless.confirm(false);
+frameless.confirm(true);
 
 //
 // single required option, `whoami`
