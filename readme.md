@@ -1,99 +1,94 @@
-# clif
+# frameless
 
 ## introduction
 
-[“clif”](https://github.com/dscape/clif) (**c**ommand **l**ine **i**nterface **f**ramework) is a framework to write cli programs. “clif” allows you to write [command line interfaces](http://en.wikipedia.org/wiki/Command-line_interface) that are easy to read, and fun to write.
+[“frameless”](https://github.com/dscape/frameless) is a framework to write command line programs. “frameless” allows you to write command line programs that are easy to read, and fun to write.
 
-thus, “clif” is two things: (1) a set of decisions focused around how command line interfaces should work; and (2) a node.js module that demonstrates those decisions
+thus, “frameless” is two things: (1) a set of decisions focused around how commands should work; and (2) a node.js module that demonstrates those decisions
 
-the main design goal behind “clif” is to allow you to migrate your day-to-day scripts to an cli program with minimal effort. “clif” is designed with hackers in mind so all the internals are deliberately exported. this allows fellow developers to tailor behavior if they disagree with the decisions made by the maintainers of the “clif” itself, as well as perform necessary customization in style and security
+the main design goal behind “frameless” is to allow you to migrate your day-to-day scripts to the command line with minimal effort
 
-the best way to get a feel for “clif” is to simply look at an node.js cli program that uses “clif”. for example, you can check the [usage examples](https://github.com/dscape/clif/tree/master/usage) listed in the project’s repository
+“frameless” is designed with hackers in mind so all the internals are deliberately exported. this allows fellow developers to tailor behavior if they disagree with the decisions made by the maintainers of the “frameless” itself, as well as perform necessary customization in style and security
 
-“clif” is free software, available under the apache open source license (v2). see the [license](https://raw.github.com/dscape/clif/master/license.md) for more information
+the best way to get a feel for “frameless” is to simply look at an node.js program that uses the framework. for example, you can check the [usage examples](https://github.com/dscape/frameless/tree/master/usage) listed in the project’s repository
+
+“frameless” is free software, available under the apache open source license (v2). see the [license](https://raw.github.com/dscape/frameless/master/license.md) for more information
 
 ## basics
 
 ### default options
 
-command line interfaces are expected to respond consistently to options such as `version`, `yes`, `raw`, `verbose`, `help`, `setup`. “clif” will perform all these operations and behave according to the principle of least surprise. you can check which options are reserved by printing `clif.reserved_options`, and customize styles by overriding the style methods that correspond to the options
+commands are expected to respond consistently to options such as `version`, `yes`, `raw`, `verbose`, `help`, `setup`. “frameless” will perform all these operations and behave according to the [principle of least astonishment](http://en.wikipedia.org/wiki/Principle_of_least_astonishment). these default options are available and customizable in `frameless.reserved_options`. pretty print styles that correspond to these options can also be overriden
 
 ``` javascript
-var clif = require('clif');
+var frameless = require('frameless');
 
 // assuming placement in `bin/` folder
-clif.version = require('../package').version;
+frameless.version = require('../package').version;
 
-clif.main(function () {
-  clif.silly(clif.reserved_options);
+frameless.main(function (opts) {
+  frameless.ok(frameless.reserved_options);
 });
 ```
 
 ### prompt
 
-“clif” will ask for options that are required but were not provided at run time using  a prompt
+“frameless” will prompt the end user for options that are required but were not provided at run time. i.e. if you run “frameless” without specifying `--name alice` in the following script “frameless” will prompt you for the name
 
 ``` javascript
-clif.main('name', function (input) {
-  clif.info('hello ' + input.name);
+frameless.main('name', function (input) {
+  frameless.info('hello ' + input.name);
 });
 ```
 
-if you run “clif” without specifying `--name alice` “clif” will prompt you for the name.
-
-“clif” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties)
+“frameless” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties)
 
 ### the confirmation prompt
 
-“cli” will enable an “are you sure?” prompt if deliberately ask for it in your code
+“frameless” supports “are you sure?” prompts
 
 ``` javascript
-clif.confirm(true);
+frameless.confirm(true);
 ```
+
 this check can then be overridden by the end user by using the `-y` or `--yes` option
 
 ## persisting options across different requests
 
-“clif” enables programs to save and reuse the options specified in a request by exposing the `clif.save` function. calling this function with `true` will make clif automatically record the options inputed in a dot file located in your home directory
+“frameless” enables programs to save and reuse the options specified in a request by exposing the `frameless.save` function. calling this function with `true` will make frameless automatically record the options inputed in a dot file located in your home directory
 
 ``` javascript 
-clif.save(true);
+frameless.save(true);
 
-clif.main('name', 'password', function (opts) {
-  clif.info(clif.dotfile, 'dotfile');
-  clif.info(clif.sensitive_options,  'sensitive');
+frameless.main('name', 'password', function (opts) {
+  frameless.info(frameless.dotfile, 'dotfile');
+  frameless.info(frameless.sensitive_options,  'sensitive');
 });
 ```
 
-special considerations are taken for saving options which are member of an internal array called `clif.sensitive_options`. “clif” will attempt to encrypt options that include any of the substrings listed in this array, using the `clif.cypher_type` and `clif.key`. “clif” ships with a default key, but you are encouraged to change it in your program. “clif” will also attempt to read the `~/.ssh/id_rsa` private key and use it as an encryption key whenever possible
+special considerations are taken for saving options which are member of an internal array called `frameless.sensitive_options`. “frameless” will attempt to encrypt options that include any of the substrings listed in this array, using the `frameless.cypher_type` and `frameless.key`. “frameless” ships with a default key, but you are encouraged to change it in your program. “frameless” will also attempt to read the `~/.ssh/id_rsa` private key and use it as an encryption key whenever possible
 
-“clif” allows you to select which options should be saved. the default is to save the option once you called the `clif.save` method
+“frameless” allows you to select which options should be saved. the default is to save the option once you called the `frameless.save` method
 
 ``` javascript 
-clif.save(true);
+frameless.save(true);
 
-clif.main('name',
+frameless.main('name',
   { name: 'password', required: true, save: false}, function (opts) {
-  clif.info(clif.dotfile, 'dotfile');
-  clif.info(clif.sensitive_options,  'sensitive');
+  frameless.info(frameless.dotfile, 'dotfile');
+  frameless.info(frameless.sensitive_options,  'sensitive');
 });
 ```
 
-### router
+### pretty printing
 
-tbd.
-
-### themes
-
-internally “clif” exposes methods that format output presented to user. please check the source code in the `style` section for a better understanding of all functions you can customize to your liking (e.g. `clif.PS1`)
-
-### man pages
+“frameless” exports all methods that format output presented to user. please check the source code’s `style` section for a better understanding of all functions you can customize (e.g. `frameless.PS1`)
 
 ### publishing your module with npm
 
-tbd.
+tbd. blog post.
 
-## apps built using clif
+## apps built using frameless
 
 * [ghcopy](https://github.com/dscape/ghcopy)
 

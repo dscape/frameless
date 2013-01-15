@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-var clif = require('../lib/clif');
+var frameless = require('../lib/frameless');
 
-clif.confirm(false);
+frameless.confirm(false);
 
-clif.relax('whoami', function (opts) {
-  clif.warn(opts);
+frameless('whoami', function (opts) {
+  frameless.warn(opts);
 });
 
 //

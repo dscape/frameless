@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-var clif = require('../lib/clif');
+var frameless = require('../lib/frameless');
 
-clif.relax('help', function (opts) {
-  clif.silly(clif.reserved_options);
+frameless('help', function (opts) {
+  frameless.silly(frameless.reserved_options);
 });
 
 //

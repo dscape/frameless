@@ -1,18 +1,23 @@
 {
-  "name": "clif",
+  "name": "frameless",
   "version": "0.0.0",
-  "description": "a framework to build cli applications that is designed to get our of your way",
-  "main": "lib/clif.js",
+  "description": "a tiny framework to write command line programs",
+  "main": "lib/frameless.js",
   "scripts": {
     "test": "vows --spec test/*-test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:dscape/clif.git"
+    "url": "git@github.com:dscape/frameless.git"
   },
   "keywords": [
     "cli",
-    "framework"
+    "framework",
+    "commands",
+    "programs",
+    "command line",
+    "command line interface",
+    "command line program"
   ],
   "author": "nuno job <nunojobpinto@gmail.com> (http://nunojob.com)",
   "license": "apache 2.0",
@@ -23,6 +28,7 @@
     "eyes": "~0.1.8"
   },
   "devDependencies": {
-    "cli-easy": "0.1.x"
+    "cli-easy": "0.1.x",
+    "nano": "3.3.7"
   }
 }

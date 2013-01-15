@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-var clif = require('../lib/clif');
+var frameless = require('../lib/frameless');
 
-clif.version = '1.0.1';
-clif.pp_version = function () { console.log(clif.version); };
+frameless.version = '1.0.1';
+frameless.pp_version = function () { console.log(frameless.version); };
 
-clif.relax('required', function (opts) {
-  clif.warn(opts.required);
+frameless('required', function (opts) {
+  frameless.warn(opts.required);
 });
 
 //
