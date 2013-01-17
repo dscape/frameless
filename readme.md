@@ -41,7 +41,7 @@ frameless('name', function (input) {
 });
 ```
 
-“frameless” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties)
+“frameless” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties). “frameless” adds two new properties to the flatiron/prompt object: (1) `save`; to control whether or not that specific option should be persisted in the dot file, and (2) `load`; which dictates the given option is a file and the contents of that option should be the file itself
 
 ### the confirmation prompt
 
@@ -89,10 +89,6 @@ configuring your command line program can later be done by the end user by chang
 ### publishing your module with npm
 
 tbd. blog post.
-
-## apps built using frameless
-
-* [ghcopy](https://github.com/dscape/ghcopy)
 
 ## license
 

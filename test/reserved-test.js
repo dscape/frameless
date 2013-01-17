@@ -13,5 +13,5 @@ clieasy.describe('usage/reserved')
   .discuss('with no options')
     .arg('--raw')
     .expect('should return `error`',
-      /error. error: `--help` is an reserved option. please rename it/)
+      /`--help` is an reserved option. please rename it/)
 ["export"](module);

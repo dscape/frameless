@@ -6,42 +6,6 @@ var frameless = require('../lib/frameless')
   ;
 
 //
-// remove colored output
-//
-frameless.raw();
-
-//
-// sets the version of this program
-//
-frameless.version = "0.0.1";
-
-//
-// change our prompt
-//
-frameless.PS1 = '? ';
-
-//
-// set how to pretty print the version of this program
-//
-frameless.pp_version = function () {
-  console.log('version '+ frameless.version);
-};
-
-//
-// sets the pretty print for usage
-//
-frameless.usage = function () {
-  console.log('version '+ frameless.version);
-  console.log(
-    [ 'usage: encrypt-aes [-hvD] [-k=/some/encryption/key]'
-    , '-h, --help     display this message'
-    , '-v, --version  display version info'
-    , '-D, --decode   decodes input'
-    , '-k=path        encryption key to be used'
-    ].join('\n'));
-};
-
-//
 // save key so we can reuse it
 //
 frameless.save(true);
@@ -53,8 +17,9 @@ frameless.save(true);
 frameless(
   { name: 'k'
   , required: true
-  , 'default': path.join(frameless.tilde,
-    '.ssh', 'id_rsa') }, function (opts) { // fixme: prompt before stdin
+  , load: true // we should treat this as a filepath and readFile
+  , 'default': path.join(frameless.tilde, '.ssh', 'id_rsa')
+  }, function (opts) {
 
   //
   // warning this source code serves as illustration only
@@ -171,7 +136,9 @@ frameless(
 });
 
 // fixme: support `^D` for people to be able to use stdin without piping
-
+process.on('SIGQUIT', function () {
+  console.log('wat');
+})
 //
 // this module gets tests against `test/encrypt-test.js`
 // if you are curious about it feel free to take a peek in the source code

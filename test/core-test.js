@@ -21,7 +21,11 @@ clieasy.describe('usage/core')
   .discuss('with the `--help` option')
     .arg('--help')
     .arg('--raw')
-    .expect('should return the usage string', /usage\./m)
+    .expect('should return `-h`', /\-h/)
+    .expect('should return `--help`', /\-\-help/)
+    .expect('should return `-v`', /\-v/)
+    .expect('should return `--version`', /\-\-version/)
+    .expect('should return `--verbose`', /\-\-verbose/)
   .undiscuss()
   //
   // get the version

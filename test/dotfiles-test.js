@@ -18,6 +18,10 @@ clieasy.describe('usage/dotfiles-setup')
   .use(couchdb)
   .discuss('when using `usage/couchdb-*`')
   .arg('--raw')
+  .discuss('with the `--help` option')
+    .arg('--help')
+    .expect('should return `--setup`', /\-\-setup/)
+  .undiscuss()
   .discuss('with all required options')
     .arg('--hostname localhost:5984')
     .arg('--protocol http')
@@ -109,6 +113,21 @@ clieasy.describe('usage/dotfiles-assumed-options')
     })
     .expect('password to be encrypted and same as before', function () {
       return dotfile.password === encrypted.password;
+    })
+["export"](module);
+
+//
+// nao we dont need to specify things that got and we have the same
+// behavior
+//
+clieasy.describe('usage/dotfiles-help')
+  .use(couchdb)
+  .discuss('when using `usage/couchdb-*`')
+  .arg('--raw')
+  .discuss('with `--help`')
+    .arg('--help')
+    .expect('it should not include encrypted fields as plain text', function (usage) {
+      return !/localhost/.test(usage);
     })
 ["export"](module);
 
