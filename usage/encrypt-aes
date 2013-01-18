@@ -15,112 +15,45 @@ frameless.save(true);
 // and never gets asked again. you can then change it by using -k option
 //
 frameless(
-  { name: 'k'
-  , required: true
-  , load: true // we should treat this as a filepath and readFile
+  { name     : 'k'
+  , required : true
+  , load     : 'utf-8' // we should treat this as a filepath and readFile
   , 'default': path.join(frameless.tilde, '.ssh', 'id_rsa')
   }, function (opts) {
 
-  //
-  // warning this source code serves as illustration only
-  // this was unproperly implemented (cause im on a plane and dont have wifi)
-  // and the new Streams2 abstraction will make this a breeze to do
-  //
-  var key
-    , decipher
-    , cipher
-    , encoded
-    , ret
-    , buffer = '';
+  var decipher = crypto.createDecipher('aes-256-cbc', opts.k)
+    , cipher   = crypto.createCipher('aes-256-cbc', opts.k)
+    , ret = ''
+    ;
 
-  function encrypt_aes (chunk) {
-    //
-    // we still havent loaded the key file
-    // so we keep buffering
-    //
-    if(!key) {
-      buffer += chunk;
-      return;
-    }
-
-    //
-    // if we have the keyfile but our buffer is non empty
-    //
-    if(buffer !== '') {
-      chunk  = buffer + chunk;
-      buffer = '';
-    }
-
-    //
-    // decrypt
-    //
-    if(frameless.argv.d) {
-      ret = decipher.update(chunk, 'hex', 'utf8');
-    }
-    //
-    // encrypt
-    //
-    else {
-      ret = cipher.update(chunk, 'utf8', 'hex');
+  function crypt_aes(chunk) {
+    try {
+      //
+      // decrypt
+      //
+      if(frameless.argv.d) {
+        ret = decipher.update(chunk, 'hex', 'utf8');
+      }
+      //
+      // encrypt
+      //
+      else {
+        ret = cipher.update(chunk, 'utf8', 'hex');
+      }
+    } catch (e) {
+      if(frameless.verbose()) {
+        frameless.err(e.message, true);
+      }
     }
   }
 
-  //
-  // read out key file
-  //
-  // fixme: i would be open to a pull request which makes this an option
-  // to frameless itself and automating this process for all files
-  //
-  fs.readFile(opts.k, 'utf8', function (err, _key) {
-    if(err) {
-      console.log('error. ' + err.message);
-      return;
-    }
-    //
-    // set our crypto objects
-    //
-    key = _key;
-    decipher = crypto.createDecipher('aes-256-cbc', _key);
-    cipher   = crypto.createCipher('aes-256-cbc', _key);
-  });
-
-  //
-  // open stdin from `|`
-  //
-  var stdin = process.openStdin();
-  stdin.setEncoding('utf8');
-
-  //
-  // whenever there is data encrypt it
-  //
-  stdin.on('data', encrypt_aes);
-
-  //
-  // if we reached the end of input
-  //
-  stdin.on('end', function stdin_end() {
-    //
-    // if we still have buffered data encrypt it
-    //
-    if(buffer !== '') {
-      encrypt_aes('');
-    }
-
-    //
-    // if the key has not loaded yet retry
-    //
-    if(!key) {
-      setTimeout(stdin_end, 50);
-      return;
-    }
-
+  function stdin_end() {
     //
     // decrypt
     //
     if(frameless.argv.d) {
       ret += decipher.final('utf8');
     }
-
     //
     // encrypt
     //
@@ -132,13 +65,33 @@ frameless(
     // write out the results
     //
     process.stdout.write(ret);
+  }
+
+  //
+  // open stdin from `|`
+  //
+  var stdin = process.openStdin();
+  stdin.setEncoding('utf8');
+
+  //
+  // whenever there is data encrypt it
+  //
+  stdin.on('data', crypt_aes);
+
+  //
+  // if we reached the end of input
+  //
+  stdin.on('end', stdin_end);
+
+  //
+  // `^D` EOF for stopping in tty mode
+  //
+  frameless.keypress('d', function () {
+    stdin_end();
+    process.stdin.pause();
   });
 });
 
-// fixme: support `^D` for people to be able to use stdin without piping
-process.on('SIGQUIT', function () {
-  console.log('wat');
-})
 //
 // this module gets tests against `test/encrypt-test.js`
 // if you are curious about it feel free to take a peek in the source code
@@ -158,8 +111,7 @@ process.on('SIGQUIT', function () {
  * options
  *      the following options are available:
  *
- *      -d
- *      --decode             decode incoming base64 stream into binary data.
+ *      -d                  decode incoming encrypted stream
  *
  *      -h
  *      --help               print usage summary and exit.

@@ -53,7 +53,7 @@ frameless.confirm(true);
 
 this check can then be overridden by the end user by using the `-y` or `--yes` option
 
-## persisting options across different requests
+## persisting options across different runs
 
 “frameless” enables programs to save and reuse the options specified in a request by exposing the `frameless.save` function. calling this function with `true` will make frameless automatically record the options inputed in a dot file located in your home directory
 
