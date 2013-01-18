@@ -1,6 +1,6 @@
 {
   "name": "frameless",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "a tiny framework to write command line programs",
   "main": "lib/frameless.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "keypress": "~0.1.0"
   },
   "devDependencies": {
-    "cli-easy": "0.1.x",
-    "nano": "3.3.7"
+    "cli-easy": "~0.1.x",
+    "nano": "~3.3.6"
   }
 }
