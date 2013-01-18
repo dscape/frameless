@@ -4,7 +4,7 @@
   "description": "a tiny framework to write command line programs",
   "main": "lib/frameless.js",
   "scripts": {
-    "test": "vows --spec test/*-test.js"
+    "test": "./node_modules/cli-easy/node_modules/vows/bin/vows --spec test/*-test.js"
   },
   "repository": {
     "type": "git",
