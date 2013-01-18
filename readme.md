@@ -16,9 +16,9 @@ the best way to get a feel for “frameless” is to simply look at an node.js p
 
 ## basics
 
-### default options
+### options
 
-commands are expected to respond consistently to options such as `version`, `yes`, `raw`, `verbose`, `help`, `setup`. “frameless” will perform all these operations and behave according to the [principle of least astonishment](http://en.wikipedia.org/wiki/Principle_of_least_astonishment). these default options are available and customizable in `frameless.reserved_options`. pretty print styles that correspond to these options can also be overriden
+commands are expected to respond consistently to options such as `version`, `yes`, `raw`, `verbose`, `help`, `setup`. “frameless” will perform all these operations and behave according to the [principle of least astonishment](http://en.wikipedia.org/wiki/Principle_of_least_astonishment). these default options are defined in `frameless.reserved_options` and pretty print styles that correspond to these options can be overriden
 
 ``` javascript
 var frameless = require('frameless');
@@ -41,9 +41,7 @@ frameless('name', function (input) {
 });
 ```
 
-“frameless” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties). “frameless” adds two new properties to the flatiron/prompt object: (1) `save`; to control whether or not that specific option should be persisted in the dot file, and (2) `load`; which dictates the given option is a file and the contents of that option should be the file itself
-
-### the confirmation prompt
+“frameless” prompt is built on top of the [flatiron/prompt](https://github.com/flatiron/prompt) module. all the arguments to the main function (except the callback) are assumed to be either a string (i.e. a mandatory option) or an object that represents a [flatiron/prompt option object](https://github.com/flatiron/prompt#prompting-with-validation-default-values-and-more-complex-properties). “frameless” adds two new properties to the flatiron/prompt object: (1) `save`; to control whether or not that specific option should be persisted in the dot file, and (2) `load`; which serves the purpose of automatically loading files specified in options
 
 “frameless” supports “are you sure?” prompts
 
@@ -51,11 +49,11 @@ frameless('name', function (input) {
 frameless.confirm(true);
 ```
 
-this check can then be overridden by the end user by using the `-y` or `--yes` option
+this behavior can be overridden by the end user by using the `-y` or `--yes` option
 
 ## persisting options across different runs
 
-“frameless” enables programs to save and reuse the options specified in a request by exposing the `frameless.save` function. calling this function with `true` will make frameless automatically record the options inputed in a dot file located in your home directory
+“frameless” enables programs to save and reuse the options specified in a run by exposing `frameless.save`. calling this function will make frameless automatically record the options inputed in a dot file located in your home directory
 
 ``` javascript 
 frameless.save(true);
@@ -66,7 +64,7 @@ frameless('name', 'password', function (opts) {
 });
 ```
 
-special considerations are taken for saving options which are member of an internal array called `frameless.sensitive_options`. “frameless” will attempt to encrypt options that include any of the substrings listed in this array, using the `frameless.cypher_type` and `frameless.key`. “frameless” ships with a default key, but you are encouraged to change it in your program. “frameless” will also attempt to read the `~/.ssh/id_rsa` private key and use it as an encryption key whenever possible
+special considerations are taken for saving sensitive options such as passwords and api keys. “frameless” will attempt to encrypt these options. “frameless” ships with a default encryption key but fellow developers are encouraged to use a different key in their own programs. “frameless” will automatically attempt to read the `~/.ssh/id_rsa` private key and use it as an encryption key whenever possible
 
 “frameless” allows you to select which options should be saved. the default is to save the option once you called the `frameless.save` method
 
@@ -80,15 +78,7 @@ frameless('name',
 });
 ```
 
-configuring your command line program can later be done by the end user by changing the dot file or running your command with `--setup`
-
-### pretty printing
-
-“frameless” exports all methods that format output presented to user. please check the source code’s `style` section for a better understanding of all functions you can customize (e.g. `frameless.PS1`)
-
-### publishing your module with npm
-
-tbd. blog post.
+configuring your command line program can later be done by the end user by changing the dot file directly or running your command while specifying the `--setup` option
 
 ## license
 
