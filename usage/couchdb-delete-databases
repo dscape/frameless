@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+//
+// sample frameless script to delete couchdbs matching a pattern
+//
+// please run `npm install nano` to run this example
+//
+// curl localhost:5984/_all_dbs | \
+//   ./usage/couchdb-delete-databases \
+//   --pattern loggly \
+//   --uri http://localhost:5984
+//
+var frameless = require('../lib/frameless')
+  , nano      = require('nano')
+  ;
+
+frameless(
+    { name: 'uri'      , required: false, 'default': 'http://localhost:5984' }
+  , { name: 'pattern'  , required: true, 'default': 'testdb', save: false   },
+  function (opts) {
+
+    var server = nano(opts.uri)
+      , rexp   = new RegExp(opts.pattern)
+      , buffer = ''
+      ;
+
+    var stdin = process.openStdin();
+    stdin.setEncoding('utf8');
+
+    function buffer_it(chunk) {
+      buffer += chunk;
+    }
+
+    function destroy_dbs() {
+      buffer = JSON.parse(buffer);
+      buffer.forEach(function (db_name) {
+        if(rexp.test(db_name)) {
+          frameless.info(db_name, 'destroyed');
+          server.db.destroy(db_name, frameless.print);
+        }
+      });
+    }
+
+    stdin.on('data', buffer_it);
+
+    stdin.on('end', destroy_dbs);
+});
