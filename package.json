@@ -1,6 +1,6 @@
 {
   "name": "frameless",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "a tiny framework to write command line programs",
   "main": "lib/frameless.js",
   "scripts": {
