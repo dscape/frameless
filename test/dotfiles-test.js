@@ -23,7 +23,7 @@ clieasy.describe('usage/dotfiles-setup')
     .expect('should return `--setup`', /\-\-setup/)
   .undiscuss()
   .discuss('with all required options')
-    .arg('--hostname localhost:5984')
+    .arg('--hostname anotherhost:5984')
     .arg('--protocol http')
     .arg('--username food')
     .arg('--password bar')
@@ -127,7 +127,7 @@ clieasy.describe('usage/dotfiles-help')
   .discuss('with `--help`')
     .arg('--help')
     .expect('it should not include encrypted fields as plain text', function (usage) {
-      return !/localhost/.test(usage);
+      return !/anotherhost/.test(usage);
     })
 ["export"](module);
 

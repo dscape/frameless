@@ -55,7 +55,7 @@ this behavior can be overridden by the end user by using the `-y` or `--yes` opt
 
 “frameless” enables programs to save and reuse the options specified in a run by exposing `frameless.save`. calling this function will make frameless automatically record the options inputed in a dot file located in your home directory
 
-``` javascript 
+``` javascript
 frameless.save(true);
 
 frameless('name', 'password', function (opts) {
@@ -68,7 +68,7 @@ special considerations are taken for saving sensitive options such as passwords 
 
 “frameless” allows you to select which options should be saved. the default is to save the option once you called the `frameless.save` method
 
-``` javascript 
+``` javascript
 frameless.save(true);
 
 frameless('name',

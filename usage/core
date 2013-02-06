@@ -13,7 +13,6 @@ frameless.version = '1.0.1';
 //
 frameless.pp_version = function () { console.log(frameless.version); };
 
-
 //
 // `--required` is a required option
 //
