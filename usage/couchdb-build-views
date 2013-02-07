@@ -1,0 +1,89 @@
+#!/usr/bin/env node
+//
+// sample frameless script to build your couchdb views
+//
+// please run `npm install nano request` to run this example
+//
+var frameless = require('../lib/frameless')
+  , url       = require('url')
+  , nano      = require('nano')
+  , request   = require('request')
+  ;
+
+frameless(
+    { name: 'couchdb', 'default': 'http://localhost:5984' }, function (opts) {
+
+      var server = nano(opts.couchdb);
+
+      //
+      // list our existing databases
+      //
+      server.db.list(function (err, dbs) {
+        if(err) {
+          return frameless.err(err.message, 'listfail');
+        }
+
+        //
+        // for each database
+        //
+        dbs.forEach(function (db) {
+          //
+          // ignore special `_` dbs
+          //
+          if(db.indexOf('_') === 0) {
+            return;
+          }
+
+          //
+          // list the design documents
+          //
+          server.dinosaur(
+            { path: db + '/_all_docs'
+            , params:
+              { "startkey": "_design/"
+              , "endkey": "_design0"
+              , "include_docs": true
+              }
+          }, function (err, ddocs) {
+            if(err) {
+              return frameless.err(err.message, 'ddocsfail');
+            }
+
+            //
+            // tell people if we couldn't find any design documents
+            //
+            if(!Array.isArray(ddocs.rows)) {
+              return frameless.warn(JSON.stringify(ddocs), 'noddocs');
+            }
+
+            //
+            // for each design document in this database
+            //
+            ddocs = ddocs.rows.forEach(function (d) {
+              var ddoc_id = d.id.split('/')[1];
+              var ddoc_views = d.doc && d.doc.views;
+              var thisDb = server.use(db);
+
+              //
+              // if we have views
+              //
+              if(ddoc_views && Object.keys(ddoc_views).length !== 0) {
+                Object.keys(ddoc_views).forEach(function (vname){
+                  frameless.info('building ' + ddoc_id + '/' + vname, db);
+                  thisDb.view(ddoc_id, vname, function (err, wat) {
+                    if (err) {
+                      return frameless.err(db + '/' + ddoc_id + '/' + vname,
+                        'fuu');
+                    }
+                    frameless.info(db + '/' + ddoc_id + '/' + vname, 'built');
+                  });
+                });
+              } else {
+                frameless.warn(db + '/' + ddoc_id +
+                  ' has no views', 'ohnoes');
+              }
+            });
+          });
+        });
+      });
+});
