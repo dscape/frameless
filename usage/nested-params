@@ -1,0 +1,24 @@
+#!/usr/bin/env node
+
+var frameless = require('../lib/frameless');
+
+frameless.sensitive_options.push('provider.password');
+
+//
+// You can give params as --provider-username and --provider-password
+//
+frameless(
+  {
+    name: 'provider',
+    properties: [
+      { name: 'username', required: true },
+      { name: 'password', required: true }
+    ]
+  },
+  function (opts) {
+    //
+    // Prints { username: 'prompted-value', password: 'prompted-value' }
+    //
+    console.log(opts);
+  }
+);
