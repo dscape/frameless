@@ -11,7 +11,7 @@ var frameless = require('../lib/frameless')
 
 //
 // "frameless" allows you specify your own encryption key
-// by default it will use ~/.ssh/id_rsa and 
+// by default it will use ~/.ssh/id_rsa and
 // fallback to a key included in the code
 //
 frameless.key = 'd41d8cd98f00b204e9800998ecf8427e';
@@ -70,8 +70,8 @@ frameless(
     // our user document
     //
     var user =
-        { name         : opts['usr-name']
-        , email        : opts['usr-email']
+        { name         : opts.usr.name
+        , email        : opts.usr.email
         , _id          : 'org.couchdb.user:' + opts['usr-name']
         , type         : 'user'
         , roles        : []
@@ -89,7 +89,7 @@ frameless(
     // frameless.print is a generic callback function that will print
     // an error or the response according to usual nodejs conventions
     //
-    
+
     //
     // this line is commented so we can use this in tests without
     // requiring couchdb. remove the comment and comment the one below
@@ -100,7 +100,7 @@ frameless(
 
     frameless.print(null,
       { "rev": "1-681a"
-      , "id": "org.couchdb.user:" + opts['usr-name']
+      , "id": "org.couchdb.user:" + opts.usr.name
       , "ok": true });
 });
 
