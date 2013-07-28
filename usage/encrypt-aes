@@ -20,31 +20,13 @@ frameless(
   , load     : 'utf-8' // we should treat this as a filepath and readFile
   , 'default': path.join(frameless.tilde, '.ssh', 'id_rsa')
   }, function (opts) {
-
   var decipher = crypto.createDecipher('aes-256-cbc', opts.k)
     , cipher   = crypto.createCipher('aes-256-cbc', opts.k)
-    , ret = ''
+    , buffer   = ''
     ;
 
-  function crypt_aes(chunk) {
-    try {
-      //
-      // decrypt
-      //
-      if(frameless.argv.d) {
-        ret = decipher.update(chunk, 'hex', 'utf8');
-      }
-      //
-      // encrypt
-      //
-      else {
-        ret = cipher.update(chunk, 'utf8', 'hex');
-      }
-    } catch (e) {
-      if(frameless.verbose()) {
-        frameless.err(e.message, true);
-      }
-    }
+  function add_to_buffer(chunk) {
+    buffer += chunk;
   }
 
   function stdin_end() {
@@ -52,19 +34,19 @@ frameless(
     // decrypt
     //
     if(frameless.argv.d) {
-      ret += decipher.final('utf8');
+      buffer = decipher.update(buffer, 'hex', 'utf8') + decipher.final('utf8');
     }
     //
     // encrypt
     //
     else {
-      ret += cipher.final('hex');
+      buffer = cipher.update(buffer, 'utf8', 'hex') + cipher.final('hex');
     }
 
     //
     // write out the results
     //
-    process.stdout.write(ret);
+    process.stdout.write(buffer);
   }
 
   //
@@ -76,7 +58,7 @@ frameless(
   //
   // whenever there is data encrypt it
   //
-  stdin.on('data', crypt_aes);
+  stdin.on('data', add_to_buffer);
 
   //
   // if we reached the end of input

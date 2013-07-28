@@ -1,6 +1,6 @@
 {
   "name": "frameless",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "a tiny framework to write command line programs",
   "main": "lib/frameless.js",
   "scripts": {
@@ -22,12 +22,12 @@
   "author": "nuno job <nunojobpinto@gmail.com> (http://nunojob.com)",
   "license": "apache 2.0",
   "dependencies": {
-    "optimist": "~0.3.5",
+    "optimist": "~0.6.0",
     "prompt": "~0.2.9",
     "colors": "~0.6.0",
     "eyes": "~0.1.8",
-    "async": "~0.1.22",
-    "keypress": "~0.1.0"
+    "async": "~0.2.9",
+    "keypress": "~0.2.1"
   },
   "devDependencies": {
     "cli-easy": "~0.1.x",
